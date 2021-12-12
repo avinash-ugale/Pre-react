@@ -2,11 +2,30 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
  class PersonList extends Component{
+     state={
+         selectObject :null,
+
+     };
     onDeleteHandler=(index)=>{
         const personListCopy=this.state.personList;
         personListCopy.splice(index , 1);
         this.setState({personList: personListCopy});
         };
+
+       editButtonClickHandler=(person)=>{
+          console.log("edit",person);
+          this.setState({selectObject:person});
+        
+       };
+       onResetHandler =()=>{
+           this.setState({selectObject:null});
+       }
+       onValueChangeHandler=(event)=>{
+           const {value,name} =(event.target);
+           this.setState({selectObject:{...this.state.selectObject,[name]:value},
+        });
+
+       };
      render(){
          return(
              <div>
@@ -23,15 +42,54 @@ import { connect } from "react-redux";
                  {this.props.personList.map((person,index)=>
                  {
                      return(
-                     <tr key={index}>
-                         <th>{index+1}</th>
-                          <th>{person.name}</th>
-                          <th>{person.age}</th>
-                          <th><button className="btn btn-danger" 
-                          onClick={()=>{
-                              this.props.deletePersonByIndex(index)
+                     <tr key={person.id}>
+                         <th>{person.id}</th>
+                          <th>
+                              {this.state.selectObject && this.state.selectObject.id === person.id ?
+                            (<input 
+                                name="name"
+                                value={this.state.selectObject.name} 
+                                onChange={this.onValueChangeHandler}/>) :(person.name) 
+                            }
+                             
+                          </th>
+                          <th>
+                              {this.state.selectObject && this.state.selectObject.id === person.id ?
+                            (<input 
+                                name="age"
+                                value={this.state.selectObject.age} 
+                                onChange={this.onValueChangeHandler}/>) :(person.age) 
+                            }
+                             
+                          </th>
+
+                          
+                          <th>
+                          {this.state.selectObject && this.state.selectObject.id === person.id ? <>
+                          <button className="btn btn-danger" 
+                               onClick={()=>{
+                              this.props.updatePerson({
+                                  ...this.state.selectObject,
+                              });
+                              this.onResetHandler();
                           }}
-                          >-</button></th>
+                          >Update</button>
+                          &nbsp;
+                          <button onClick={()=>{
+                              this.onResetHandler();
+                          }}>Reset</button></> : 
+                          <>
+                          <button className="btn btn-danger" 
+                          onClick={()=>{
+                          this.props.deletePersonByIndex(index)
+                     }}
+                        >Delete</button>
+                     &nbsp;
+                     <button onClick={()=>{
+                         this.editButtonClickHandler(person);
+                     }}>Edit</button>
+                     </>}
+                              </th>
                          </tr>
                      );
                     })}
@@ -49,6 +107,8 @@ const mapStateToProps=(state)=>{  //getting the value from state to props
    const mapDispatchToProps=(dispatch)=>{
     return{
       deletePersonByIndex:(index)=>dispatch({type:"PERSON_DELETE",payload:index}),
+
+      updatePerson:(person)=>dispatch({type:"PERSON_UPDATE",payload:person}),
     };
    };
    export default connect(mapStateToProps,mapDispatchToProps)(PersonList);

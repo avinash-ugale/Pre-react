@@ -1,18 +1,18 @@
-
+// import Person from './Person';
+import Person from './Person';
+import PersonList from './PersonList';
 import './App.css';
-// import ClassComponentConversion from './ClassComponentConversion';
-// import FunctionalComponent from './FunctionalComponent';
-import OnlineOrder from './OnlineOrder';
-import OfflineOrder from './OfflineOrder';
 
 function App() {
   return (
-    <div className="App">
-     {/* <ClassComponentConversion/>
-     <FunctionalComponent/> */}
-     <OnlineOrder/>
-     <OfflineOrder/>
-    </div>
+  <>
+  {/* <PersonList/> */}
+  <Person/>
+  {/* <Course/> */}
+ 
+  </>
+    
+    
   );
 }
 
